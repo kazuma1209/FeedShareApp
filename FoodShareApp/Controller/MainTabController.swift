@@ -22,17 +22,18 @@ class MainTabController:UITabBarController{
     func configureViewController(){
         
         view.backgroundColor = .white
-        UITabBar.appearance().barTintColor = UIColor(red: 255/255, green: 240/255, blue: 245/255, alpha: 1.0)
+        UITabBar.appearance().barTintColor = .black
         
-        let feed = templateNavigationController(unselectedImage: #imageLiteral(resourceName: "food_unselected"), selectedImage: #imageLiteral(resourceName: "food_selected"), rootViewController: FeedController())
+        let layout = UICollectionViewFlowLayout()
+        let feed = templateNavigationController(unselectedImage: #imageLiteral(resourceName: "food_unselected"), selectedImage: #imageLiteral(resourceName: "food_selected"), rootViewController: FeedController(collectionViewLayout: layout))
         
-        let search = templateNavigationController(unselectedImage: #imageLiteral(resourceName: "search_unselected"), selectedImage: #imageLiteral(resourceName: "search_selected"), rootViewController: SearchController())
+        let search = templateNavigationController(unselectedImage: #imageLiteral(resourceName: "探す_unselected"), selectedImage: #imageLiteral(resourceName: "探す_unselected"), rootViewController: SearchController())
         
-        let imageSelector = templateNavigationController(unselectedImage: #imageLiteral(resourceName: "plus_unselected"), selectedImage: #imageLiteral(resourceName: "plus_unselected"), rootViewController: ImageSelectorController())
+        let imageSelector = templateNavigationController(unselectedImage: #imageLiteral(resourceName: "plus"), selectedImage: #imageLiteral(resourceName: "plus"), rootViewController: ImageSelectorController())
         
-        let notification = templateNavigationController(unselectedImage: #imageLiteral(resourceName: "like_unselected"), selectedImage: #imageLiteral(resourceName: "like_selected"), rootViewController: NotificationController())
+        let notification = templateNavigationController(unselectedImage: #imageLiteral(resourceName: "banana"), selectedImage: #imageLiteral(resourceName: "banana"), rootViewController: NotificationController())
         
-        let profile = templateNavigationController(unselectedImage: #imageLiteral(resourceName: "profile_unselected"), selectedImage: #imageLiteral(resourceName: "profile_selected"), rootViewController: ProfileController())
+        let profile = templateNavigationController(unselectedImage: #imageLiteral(resourceName: "人"), selectedImage: #imageLiteral(resourceName: "人"), rootViewController: ProfileController())
         
         viewControllers = [feed,search,imageSelector,notification,profile]
         
@@ -44,8 +45,8 @@ class MainTabController:UITabBarController{
         let nav = UINavigationController(rootViewController: rootViewController)
         nav.tabBarItem.image = unselectedImage
         nav.tabBarItem.selectedImage = selectedImage
-        nav.navigationBar.tintColor = .black
-        nav.navigationBar.barTintColor = UIColor(red: 255/255, green: 240/255, blue: 245/255, alpha: 1.0)
+        nav.navigationBar.tintColor = .white
+        nav.navigationBar.barTintColor = .orange
         return nav
     }
 }
