@@ -7,11 +7,17 @@
 
 import UIKit
 
+protocol AuthenticationDelegate: AnyObject {
+    func authnticationDidComplete()//①delegateの準備(AuthenticationDelegate:authnticationDidComplete)
+}
+
 class LoginController:UIViewController{
     
     //MARK: -プロパティー
     
     private var viewModel = LoginViewModel()
+    
+    weak var delegate:AuthenticationDelegate?//②delegateの宣言(AuthenticationDelegate:authnticationDidComplete)
     
     private let iconImage:UIImageView = {
         let iv = UIImageView(image: #imageLiteral(resourceName: "タイトルロゴ"))
@@ -39,13 +45,14 @@ class LoginController:UIViewController{
         button.setHeight(50)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
         button.isEnabled = false
+        button.addTarget(self, action: #selector(handleLogin), for: .touchUpInside)
         return button
     }()
     
     private let forgotPasswordButton:UIButton = {
         let button = UIButton(type: .system)
         button.attributeTitle(firstPart: "パスワードを忘れた", secondPart: "ヘルプへ")
-        
+        button.addTarget(self, action: #selector(handleShowResetPassword), for: .touchUpInside)
         return button
     }()
     
@@ -66,8 +73,24 @@ class LoginController:UIViewController{
         
     }
     //MARK: -セレクター
+    
+    @objc func handleLogin(){
+        guard let email = emailTextField.text else {return}
+        guard let password = passwordTextField.text else {return}
+        
+        AuthService.logUserIn(withEmail: email, password: password) { result, error in
+            if let error = error{
+                print("DEBUG: ログインに失敗->\(error.localizedDescription)")
+                return
+            }
+            self.delegate?.authnticationDidComplete()//③delegateを呼び出す(AuthenticationDelegate:authnticationDidComplete)
+            
+        }
+    }
+    
     @objc func handleShowSignUp(){
         let controller = RegistrationController()
+        controller.delegate = delegate
         navigationController?.pushViewController(controller, animated: true)
     }
     
@@ -79,6 +102,14 @@ class LoginController:UIViewController{
         }
         
         updateForm()
+    }
+    
+    @objc func handleShowResetPassword(){
+        let controller = ResetPasswordController()
+        controller.delegate = self
+        controller.email = emailTextField.text
+        navigationController?.pushViewController(controller, animated: true)
+        
     }
     //MARK: -ヘルパー
     func configureUI(){
@@ -118,5 +149,13 @@ extension LoginController:FormViewModel{
         loginButton.backgroundColor = viewModel.buttonBackgroundColor
         loginButton.setTitleColor(viewModel.buttonTitleColor, for: .normal)
         loginButton.isEnabled = viewModel.formIsValid
+    }
+}
+
+//MARK: -ResetPasswordControllerDelegate
+extension LoginController:ResetPasswordControllerDelegate{
+    func controllerDidSendResetPasswordLink(_ controller: ResetPasswordController) {
+        navigationController?.popViewController(animated: true)
+        showMessage(withTitle: "成功", message: "あなたのメールアドレスにパスワードをリセットするためのリンクを送りました。")
     }
 }

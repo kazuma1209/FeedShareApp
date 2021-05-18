@@ -13,6 +13,10 @@ class RegistrationController:UIViewController{
     
     private var viewModel = RegistrationViewModel()
     
+    private var profileImage:UIImage?
+    
+    weak var delegate:AuthenticationDelegate?
+    
     private let plusPhotoButton:UIButton = {
         let button = UIButton(type: .system)
         button.setImage(#imageLiteral(resourceName: "plus_photo"), for: .normal)
@@ -52,6 +56,8 @@ class RegistrationController:UIViewController{
         button.layer.cornerRadius = 5
         button.setHeight(50)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
+        button.addTarget(self, action: #selector(handleSignUp), for: .touchUpInside)
+        button.isEnabled = false
         return button
     }()
     
@@ -96,6 +102,28 @@ class RegistrationController:UIViewController{
         picker.delegate = self
         picker.allowsEditing = true
         present(picker, animated: true, completion: nil)
+    }
+    
+    @objc func handleSignUp(){
+        guard let email = emailTextField.text else {return}
+        guard let password = passwordTextField.text else {return}
+        guard let fullname = fullnameTextField.text else {return}
+        guard let username = usernameTextField.text?.lowercased() else {return}
+        guard let profileImage = self.profileImage else {return}
+        
+        let credenticals = AuthCredenticals(email: email, password: password,
+                                            fullname: fullname, username: username,
+                                            profileImage: profileImage)
+
+        AuthService.registerUser(withCredenticals: credenticals) { error in
+            if let error = error{
+                print("DEBUG: 登録に失敗->\(error.localizedDescription)")
+                return
+            }
+            
+            self.delegate?.authnticationDidComplete()
+            
+        }
     }
     //MARK: -ヘルパー
     func configureUI(){
@@ -143,6 +171,7 @@ extension RegistrationController:UIImagePickerControllerDelegate,UINavigationCon
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         
         guard let selectedImage = info[.editedImage] as? UIImage else {return}
+        profileImage = selectedImage
         
         plusPhotoButton.layer.cornerRadius = plusPhotoButton.frame.width/2
         plusPhotoButton.layer.masksToBounds = true

@@ -6,6 +6,36 @@
 //
 
 import UIKit
+import JGProgressHUD
+
+extension UIColor {
+    static func rgb(red: CGFloat, green: CGFloat, blue: CGFloat) -> UIColor {
+        return UIColor.init(red: red/255, green: green/255, blue: blue/255, alpha: 1.0)
+    }
+    
+    static let mainBackgroundColor = UIColor.rgb(red: 255, green: 255, blue: 240)
+}
+
+extension UIViewController{
+    static let hud = JGProgressHUD(style: .dark)
+    
+    func showLoader(_ show:Bool){
+        view.endEditing(true)
+        
+        if show{
+            UIViewController.hud.show(in: view)
+        }else{
+            UIViewController.hud.dismiss()
+        }
+    }
+    
+    func showMessage(withTitle title:String,message:String){
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        present(alert, animated: true, completion: nil)
+    }
+}
+
 
 extension UIButton{
     func attributeTitle(firstPart:String,secondPart:String){
