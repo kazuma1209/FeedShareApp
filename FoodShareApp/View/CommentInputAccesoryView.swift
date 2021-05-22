@@ -19,7 +19,7 @@ class CommentInputAccesoryView:UIView{
     
     private let commentTextView:InputTextView = {
         let tv = InputTextView()
-        tv.placeholderText = "コメントを入力"
+        tv.placeholderText = "テキストを入力"
         tv.font = UIFont.systemFont(ofSize: 15)
         tv.isScrollEnabled = false
         tv.placeholderShouldCenter = true

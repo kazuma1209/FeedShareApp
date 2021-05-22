@@ -41,6 +41,11 @@ class FeedController:UICollectionViewController{
     
     //MARK: -セレクター
     
+    @objc func showMessages(){
+        let controller = ConversationController()
+        navigationController?.pushViewController(controller, animated: true)
+    }
+    
     @objc func handleRefresh(){
         posts.removeAll()
         fetchPosts()
@@ -114,6 +119,10 @@ class FeedController:UICollectionViewController{
         if post == nil{
             navigationItem.leftBarButtonItem = UIBarButtonItem(title: "ログアウト", style: .done,
                                                                 target: self, action: #selector(handleLogOut))
+            
+            navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "メール"), style: .plain, target: self,
+                                                                action: #selector(showMessages))
+            navigationItem.rightBarButtonItem?.tintColor = .black
         }
         
         navigationItem.title = "タイムライン"

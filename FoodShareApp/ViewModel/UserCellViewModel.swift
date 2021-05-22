@@ -28,3 +28,4 @@ struct UserCellViewModel {
         self.user = user
     }
 }
+
